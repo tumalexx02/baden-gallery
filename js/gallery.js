@@ -10,11 +10,35 @@ const createImageTile = (imgPath) => {
   const li = document.createElement("li");
   li.classList.add('gallery-tile');
   li.style.height = `${container.clientWidth/5}px`;
-  
+  li.style.position = 'relative';
+
+  const dimmer = document.createElement("div");
+  dimmer.classList.add('tile-dimmer');
+
+  const button = document.createElement("button");
+  button.classList.add('center-button');
+  button.style.position = 'absolute';
+  button.style.top = '50%';
+  button.style.left = '50%';
+  button.style.transform = 'translate(-50%, -50%)';
+  button.style.background = 'transparent';
+  button.style.border = 'none';
+  button.style.opacity = '0';
+  button.style.pointerEvents = 'none';
+
+  const buttonImg = document.createElement("img");
+  buttonImg.setAttribute("src", 'icons/full.svg');
+  buttonImg.style.width = '50px';
+  buttonImg.style.height = '50px';
+
+  button.appendChild(buttonImg);
+
   const img = document.createElement("img");
   img.setAttribute("src", imgPath);
 
+  li.appendChild(dimmer);
   li.appendChild(img);
+  li.appendChild(button);
   
   return(li)
 }

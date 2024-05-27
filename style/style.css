@@ -72,6 +72,7 @@ body {
 .gallery-tile {
   position: relative;
   z-index: 3;
+  background-color: #000;
 }
 
 .gallery-tile > img {
@@ -81,10 +82,20 @@ body {
   object-fit: cover;
   transform: translateX(0%);
   transition: transform 0.5s ease;
+  transition: opacity 0.2s ease;
 }
 
-.tile-button {
-  top: 0;
-  left: 0;
-  z-index: 4;
+.center-button {
+  transition: opacity 0.3s;
+  cursor: pointer;
+  z-index: 20;
+}
+
+.gallery-tile:hover > img {
+  opacity: 0.5;
+}
+
+.gallery-tile:hover > button {
+  opacity: 1 !important;
+  pointer-events: all !important;
 }
