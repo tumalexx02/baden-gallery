@@ -20,6 +20,7 @@ body {
   width: 100vw;
   height: 100vh;
   background-color: rgba(0,0,0,0.9);
+  z-index: 10000000;
 }
 
 .photo-placeholder_hidden {
@@ -27,7 +28,18 @@ body {
 }
 
 .photo-placeholder > img {
-  width: 80%;
+  max-width: 80%;
+  max-height: 80%;
+}
+
+.close-photo {
+  position: fixed;
+  right: 5%;
+  top: 5%;
+  z-index: 10000001;
+  color: #fff;
+  font-size: 5em;
+  cursor: pointer;
 }
 
 .gallery-carousel {

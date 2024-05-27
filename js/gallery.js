@@ -5,15 +5,21 @@ const container = document.querySelector('.container');
 const galleryWrapper = document.querySelector('.gallery-wrapper');
 const prevBtn = document.querySelector('.gallery-prev');
 const nextBtn = document.querySelector('.gallery-next');
+const fullScreenImg = document.querySelector('.fullscreen-photo');
+const closeFullscreen = document.querySelector('.close-photo')
+
+const openOnFullScreen = (e) => {
+  const photoSrc = e.target.parentNode.parentNode.firstChild.src;
+  console.log(photoSrc)
+  fullScreenImg.setAttribute("src", photoSrc);
+  fullScreenImg.parentElement.classList.remove("photo-placeholder_hidden");
+}
 
 const createImageTile = (imgPath) => {
   const li = document.createElement("li");
   li.classList.add('gallery-tile');
   li.style.height = `${container.clientWidth/5}px`;
   li.style.position = 'relative';
-
-  const dimmer = document.createElement("div");
-  dimmer.classList.add('tile-dimmer');
 
   const button = document.createElement("button");
   button.classList.add('center-button');
@@ -36,10 +42,11 @@ const createImageTile = (imgPath) => {
   const img = document.createElement("img");
   img.setAttribute("src", imgPath);
 
-  li.appendChild(dimmer);
   li.appendChild(img);
   li.appendChild(button);
   
+  button.addEventListener('click', (e) => openOnFullScreen(e))
+
   return(li)
 }
 
@@ -92,4 +99,8 @@ nextBtn.addEventListener('click', () => {
 prevBtn.addEventListener('click', () => {
   const lastTile = galleryWrapper.lastChild;
   galleryWrapper.prepend(lastTile);
+})
+
+closeFullscreen.addEventListener('click', () => {
+  fullScreenImg.parentElement.classList.add("photo-placeholder_hidden")
 })
