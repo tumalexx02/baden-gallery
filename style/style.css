@@ -1,0 +1,76 @@
+.gallery {
+  padding: 48px 0;
+}
+
+.gallery > .container > h3 {
+  margin-bottom: 50px;
+}
+
+body {
+  position: relative;
+}
+
+.photo-placeholder {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.9);
+}
+
+.photo-placeholder_hidden {
+  display: none;
+}
+
+.photo-placeholder > img {
+  width: 80%;
+}
+
+.gallery-carousel {
+  position: relative;
+  /* height: 300px; */
+}
+
+.gallery-prev, .gallery-next {
+  margin: 0;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  font-size: 2.5rem;
+  padding: 0 0.75em;
+  /* background-color: rgba(0,0,0,0.4); */
+  cursor: pointer;
+  color: #fff;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+  transition: background-color 0.3s;
+}
+
+.gallery-prev:hover, .gallery-next:hover {
+  background-color: rgba(0,0,0,0.2);
+}
+
+.gallery-prev {
+  left: 0;
+}
+
+.gallery-next {
+  right: 0;
+}
+
+.gallery-wrapper {
+  overflow: hidden;
+  list-style: none;
+  display: flex;
+  justify-content: start;
+}
+
+.gallery-tile > img {
+  height: 100%;
+  width: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
