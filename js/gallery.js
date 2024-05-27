@@ -3,6 +3,8 @@ let activeTab = document.querySelector('.tabs ul li.is-active');
 const galleryCarousel = document.querySelector('.gallery-carousel');
 const container = document.querySelector('.container');
 const galleryWrapper = document.querySelector('.gallery-wrapper');
+const prevBtn = document.querySelector('.gallery-prev');
+const nextBtn = document.querySelector('.gallery-next');
 
 const createImageTile = (imgPath) => {
   const li = document.createElement("li");
@@ -11,7 +13,7 @@ const createImageTile = (imgPath) => {
   
   const img = document.createElement("img");
   img.setAttribute("src", imgPath);
-  
+
   li.appendChild(img);
   
   return(li)
@@ -26,13 +28,19 @@ const addImagesToWrapper = async (tabId) => {
   fetch('jsons/tabs.json')
     .then(res => res.json())
     .then(json => {
-      // console.log(json)
       const imagesNames = json[0][tabId];
       imagesNames.forEach(imgName => {
         const newTile = createImageTile(`img/${tabId}/${imgName}`)
         galleryWrapper.appendChild(newTile)
       });
     })
+}
+
+const updateTilesHeight = () => {
+  const tiles = document.querySelectorAll('.gallery-tile');
+  tiles.forEach(tile => {
+    tile.style.height = `${container.clientWidth/5}px`;
+  });
 }
 
 addImagesToWrapper(activeTab.id)
@@ -43,12 +51,21 @@ tabs.forEach(tab => tab.addEventListener('click', () => {
     activeTab.classList.remove('is-active');
     tab.classList.add('is-active');
     activeTab = tab;
-    console.log(tab.id)
     addImagesToWrapper(tab.id)
-    // console.log(activeTab.id);
   }
 }));
 
 window.addEventListener('resize', () => {
   galleryCarousel.style.height = `${container.clientWidth/5}px`;
+  updateTilesHeight();
+});
+
+nextBtn.addEventListener('click', () => {
+  const firstTile = galleryWrapper.firstChild;
+  galleryWrapper.appendChild(firstTile);
+});
+
+prevBtn.addEventListener('click', () => {
+  const lastTile = galleryWrapper.lastChild;
+  galleryWrapper.prepend(lastTile);
 })

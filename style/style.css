@@ -47,6 +47,7 @@ body {
   color: #fff;
   text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
   transition: background-color 0.3s;
+  z-index: 10;
 }
 
 .gallery-prev:hover, .gallery-next:hover {
@@ -68,9 +69,22 @@ body {
   justify-content: start;
 }
 
+.gallery-tile {
+  position: relative;
+  z-index: 3;
+}
+
 .gallery-tile > img {
   height: 100%;
   width: auto;
   aspect-ratio: 1 / 1;
   object-fit: cover;
+  transform: translateX(0%);
+  transition: transform 0.5s ease;
+}
+
+.tile-button {
+  top: 0;
+  left: 0;
+  z-index: 4;
 }
