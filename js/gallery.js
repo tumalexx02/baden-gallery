@@ -6,13 +6,18 @@ const galleryWrapper = document.querySelector('.gallery-wrapper');
 const prevBtn = document.querySelector('.gallery-prev');
 const nextBtn = document.querySelector('.gallery-next');
 const fullScreenImg = document.querySelector('.fullscreen-photo');
-const closeFullscreen = document.querySelector('.close-photo')
+const closeFullscreen = document.querySelector('.close-photo');
+const photoPlaceholder = document.querySelector('.photo-placeholder');
 
 const openOnFullScreen = (e) => {
   const photoSrc = e.target.src;
-  console.log(photoSrc)
   fullScreenImg.setAttribute("src", photoSrc);
   fullScreenImg.parentElement.classList.remove("photo-placeholder_hidden");
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' || event.key === 'Esc') {
+      fullScreenImg.parentElement.classList.add("photo-placeholder_hidden");
+    }
+  });
 }
 
 const createImageTile = (imgPath) => {
