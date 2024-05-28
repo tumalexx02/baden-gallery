@@ -15,6 +15,8 @@ let currentTranslate = 0;
 let prevTranslate = 0;
 let animationID;
 let currentIndex = 0;
+let isSwipe = false;
+const swipeBarrier = container.clientWidth/5;
 
 const openOnFullScreen = (e) => {
   const photoSrc = e.target.src;
@@ -39,8 +41,10 @@ const createImageTile = (imgPath) => {
 
   li.appendChild(img);
 
-  li.addEventListener('click', (e) => {
-    openOnFullScreen(e);
+  !isSwipe && li.addEventListener('click', (e) => {
+    if (!isSwipe) {
+      openOnFullScreen(e);
+    }
   });
 
   return(li)
@@ -107,6 +111,7 @@ closeFullscreen.addEventListener('click', () => {
 const touchStart = (index) => {
   return function(event) {
     isDragging = true;
+    isSwipe = false;
     startPos = getPositionX(event);
     animationID = requestAnimationFrame(animation);
     galleryWrapper.classList.add('grabbing');
@@ -119,8 +124,11 @@ const touchEnd = () => {
 
   const movedBy = currentTranslate - prevTranslate;
 
-  if (movedBy < -50) nextBtn.click();
-  if (movedBy > 50) prevBtn.click();
+  if (Math.abs(movedBy) > 10) {
+    isSwipe = true;
+    if (movedBy < -50) nextBtn.click();
+    if (movedBy > 50) prevBtn.click();
+  }
 
   resetTranslate();
   galleryWrapper.classList.remove('grabbing');
@@ -129,7 +137,7 @@ const touchEnd = () => {
 const touchMove = (event) => {
   if (isDragging) {
     const currentPosition = getPositionX(event);
-    currentTranslate = prevTranslate + Math.max(Math.min(currentPosition - startPos, container.clientWidth/5), -container.clientWidth/5);
+    currentTranslate = prevTranslate + Math.max(Math.min(currentPosition - startPos, swipeBarrier), -swipeBarrier);
     setSliderPosition();
   }
 }
