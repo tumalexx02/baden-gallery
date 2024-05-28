@@ -9,6 +9,13 @@ const fullScreenImg = document.querySelector('.fullscreen-photo');
 const closeFullscreen = document.querySelector('.close-photo');
 const photoPlaceholder = document.querySelector('.photo-placeholder');
 
+let isDragging = false;
+let startPos = 0;
+let currentTranslate = 0;
+let prevTranslate = 0;
+let animationID;
+let currentIndex = 0;
+
 const openOnFullScreen = (e) => {
   const photoSrc = e.target.src;
   fullScreenImg.setAttribute("src", photoSrc);
@@ -28,11 +35,12 @@ const createImageTile = (imgPath) => {
 
   const img = document.createElement("img");
   img.setAttribute("src", imgPath);
+  img.setAttribute("draggable", "false");
 
   li.appendChild(img);
 
   li.addEventListener('click', (e) => {
-    openOnFullScreen(e)
+    openOnFullScreen(e);
   });
 
   return(li)
@@ -82,13 +90,74 @@ window.addEventListener('resize', () => {
 nextBtn.addEventListener('click', () => {
   const firstTile = galleryWrapper.firstChild;
   galleryWrapper.appendChild(firstTile);
+  resetTranslate();
 });
 
 prevBtn.addEventListener('click', () => {
   const lastTile = galleryWrapper.lastChild;
   galleryWrapper.prepend(lastTile);
+  resetTranslate();
 })
 
 closeFullscreen.addEventListener('click', () => {
   fullScreenImg.parentElement.classList.add("photo-placeholder_hidden")
 })
+
+// Draggable functionality
+const touchStart = (index) => {
+  return function(event) {
+    isDragging = true;
+    startPos = getPositionX(event);
+    animationID = requestAnimationFrame(animation);
+    galleryWrapper.classList.add('grabbing');
+  }
+}
+
+const touchEnd = () => {
+  isDragging = false;
+  cancelAnimationFrame(animationID);
+
+  const movedBy = currentTranslate - prevTranslate;
+
+  if (movedBy < -50) nextBtn.click();
+  if (movedBy > 50) prevBtn.click();
+
+  resetTranslate();
+  galleryWrapper.classList.remove('grabbing');
+}
+
+const touchMove = (event) => {
+  if (isDragging) {
+    const currentPosition = getPositionX(event);
+    currentTranslate = prevTranslate + Math.max(Math.min(currentPosition - startPos, container.clientWidth/5), -container.clientWidth/5);
+    setSliderPosition();
+  }
+}
+
+const getPositionX = (event) => {
+  return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+}
+
+const animation = () => {
+  setSliderPosition();
+  if (isDragging) requestAnimationFrame(animation);
+}
+
+const setSliderPosition = () => {
+  galleryWrapper.style.transform = `translateX(${currentTranslate}px)`;
+}
+
+const resetTranslate = () => {
+  currentTranslate = 0;
+  prevTranslate = 0;
+  setSliderPosition();
+}
+
+galleryWrapper.addEventListener('mousedown', touchStart(0));
+galleryWrapper.addEventListener('mouseup', touchEnd);
+galleryWrapper.addEventListener('mouseleave', touchEnd);
+galleryWrapper.addEventListener('mousemove', touchMove);
+
+galleryWrapper.addEventListener('touchstart', touchStart(0));
+galleryWrapper.addEventListener('touchend', touchEnd);
+galleryWrapper.addEventListener('touchmove', touchMove);
