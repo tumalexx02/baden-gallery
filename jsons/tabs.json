@@ -1,4 +1,81 @@
 [{
-  "apartments": ["rybalka.jpg", "grybalka.jpg", "running.webp", "rybalka.jpg", "grybalka.jpg", "running.webp"],
-  "infrastructure": ["grybalka.jpg", "rybalka.jpg", "grybalka.jpg", "rybalka.jpg", "grybalka.jpg", "rybalka.jpg", "grybalka.jpg", "rybalka.jpg", "grybalka.jpg", "rybalka.jpg", "grybalka.jpg", "rybalka.jpg", "grybalka.jpg"]
+  "apartments": [
+    {
+      "isVideo": true,
+      "fileName": "rybalka.jpg",
+      "videoUrl": "https://www.youtube.com/embed/yRYXVR6yv1E?si=i4m8MMBeVeR2kNch"
+    },
+    {
+      "isVideo": false,
+      "fileName": "grybalka.jpg",
+      "videoUrl": ""
+    },
+    {
+      "isVideo": false,
+      "fileName": "running.webp",
+      "videoUrl": ""
+    },
+    {
+      "isVideo": false,
+      "fileName": "rybalka.jpg",
+      "videoUrl": ""
+    },
+    {
+      "isVideo": false,
+      "fileName": "grybalka.jpg",
+      "videoUrl": ""
+    },
+    {
+      "isVideo": false,
+      "fileName": "running.webp",
+      "videoUrl": ""
+    },
+    {
+      "isVideo": false,
+      "fileName": "rybalka.jpg",
+      "videoUrl": ""
+    },
+    {
+      "isVideo": false,
+      "fileName": "grybalka.jpg",
+      "videoUrl": ""
+    },
+    {
+      "isVideo": false,
+      "fileName": "running.webp",
+      "videoUrl": ""
+    }
+  ],
+  "infrastructure": [
+    {
+      "isVideo": true,
+      "fileName": "rybalka.jpg",
+      "videoUrl": "https://youtu.be/yRYXVR6yv1E"
+    },
+    {
+      "isVideo": false,
+      "fileName": "grybalka.jpg",
+      "videoUrl": ""
+    },
+    {
+      "isVideo": false,
+      "fileName": "rybalka.jpg",
+      "videoUrl": ""
+    },
+    {
+      "isVideo": false,
+      "fileName": "grybalka.jpg",
+      "videoUrl": ""
+    },
+    {
+      "isVideo": false,
+      "fileName": "rybalka.jpg",
+      "videoUrl": ""
+    },
+    {
+      "isVideo": false,
+      "fileName": "grybalka.jpg",
+      "videoUrl": ""
+    }
+  ]
 }]

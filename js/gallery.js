@@ -6,6 +6,7 @@ const galleryWrapper = document.querySelector('.gallery-wrapper');
 const prevBtn = document.querySelector('.gallery-prev');
 const nextBtn = document.querySelector('.gallery-next');
 const fullScreenImg = document.querySelector('.fullscreen-photo');
+const fullScreenVideo = document.querySelector('.fullscreen-video');
 const closeFullscreen = document.querySelector('.close-photo');
 const photoPlaceholder = document.querySelector('.photo-placeholder');
 
@@ -16,23 +17,77 @@ let prevTranslate = 0;
 let animationID;
 let currentIndex = 0;
 let isSwipe = false;
-const swipeBarrier = container.clientWidth/5;
+let isMobile = window.innerWidth < 768;
+let activeElementType;
 
-const openOnFullScreen = (e) => {
-  const photoSrc = e.target.src;
-  fullScreenImg.setAttribute("src", photoSrc);
-  fullScreenImg.parentElement.classList.remove("photo-placeholder_hidden");
-  document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape' || event.key === 'Esc') {
-      fullScreenImg.parentElement.classList.add("photo-placeholder_hidden");
-    }
-  });
+const sizeOfTile = () => {
+  const computedStyle = getComputedStyle(container);
+  const containerWidthWithoutPaddings = container.clientWidth - parseFloat(computedStyle.paddingLeft) - parseFloat(computedStyle.paddingRight);
+  return isMobile ? containerWidthWithoutPaddings/3 : containerWidthWithoutPaddings/5
+};
+
+let swipeBarrier = sizeOfTile();
+
+function isVideoUrl(url) {
+  const videoExtensions = ['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv', 'flv', 'wmv', 'm4v'];
+
+  try {
+    const urlObj = new URL(url);
+    const extension = urlObj.pathname.split('.').pop().toLowerCase();
+    return videoExtensions.includes(extension);
+  } catch (e) {
+    return false;
+  }
 }
 
-const createImageTile = (imgPath) => {
+function isImageFileName(fileName) {
+  const imageExtensions = ['jpg', 'jpeg', 'png','webp'];
+
+  const extension = fileName.split('.').pop().toLowerCase();
+  return imageExtensions.includes(extension);
+}
+
+const openOnFullScreen = (e) => {
+  const image = e.target;
+  const tile = image.parentElement;
+
+  if (tile.classList.contains("videoTile")) {
+    fullScreenImg.classList.add("hidden");
+    fullScreenVideo.classList.remove("hidden");
+
+    const videoUrl = tile.getAttribute("data-youtube-link");
+    console.log(videoUrl);
+
+    fullScreenVideo.src = videoUrl;
+
+    fullScreenImg.parentElement.classList.remove("photo-placeholder_hidden");
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' || event.key === 'Esc') {
+        fullScreenImg.parentElement.classList.add("photo-placeholder_hidden");
+        fullScreenVideo.src = "";
+      }
+    });
+  } else {
+    fullScreenVideo.classList.add("hidden");
+    fullScreenImg.classList.remove("hidden");
+
+    const photoSrc = image.src;
+    fullScreenImg.setAttribute("src", photoSrc);
+    fullScreenImg.parentElement.classList.remove("photo-placeholder_hidden");
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' || event.key === 'Esc') {
+        fullScreenImg.parentElement.classList.add("photo-placeholder_hidden");
+        fullScreenImg.src = "";
+      }
+    });
+  }
+
+}
+
+const createImageTile = (imgPath, isVideo, videoUrl) => {
   const li = document.createElement("li");
   li.classList.add('gallery-tile');
-  li.style.height = `${container.clientWidth/5}px`;
+  li.style.height = `${sizeOfTile()}px`;
   li.style.position = 'relative';
 
   const img = document.createElement("img");
@@ -40,6 +95,20 @@ const createImageTile = (imgPath) => {
   img.setAttribute("draggable", "false");
 
   li.appendChild(img);
+
+  if (isVideo) { 
+    li.classList.add('videoTile');
+
+    const iconContainer = document.createElement('div');
+    const playIcon = document.createElement('img');
+    playIcon.src = "icons/play.svg";
+    playIcon.classList.add('playIcon');
+    iconContainer.appendChild(playIcon);
+
+    li.appendChild(iconContainer);
+
+    li.setAttribute("data-youtube-link", videoUrl);
+  }
 
   !isSwipe && li.addEventListener('click', (e) => {
     if (!isSwipe) {
@@ -59,10 +128,14 @@ const addImagesToWrapper = async (tabId) => {
   fetch('jsons/tabs.json')
     .then(res => res.json())
     .then(json => {
-      const imagesNames = json[0][tabId];
-      imagesNames.forEach(imgName => {
-        const newTile = createImageTile(`img/${tabId}/${imgName}`)
-        galleryWrapper.appendChild(newTile)
+      const tileObjs = json[0][tabId];
+      tileObjs.forEach(tileObj => {
+        const fileName = tileObj["fileName"];
+        const isVideo = tileObj["isVideo"];
+        const videoUrl = tileObj["videoUrl"];
+
+        const newTile = createImageTile(`img/${tabId}/${fileName}`, isVideo, videoUrl);
+        galleryWrapper.appendChild(newTile);
       });
     })
 }
@@ -70,12 +143,12 @@ const addImagesToWrapper = async (tabId) => {
 const updateTilesHeight = () => {
   const tiles = document.querySelectorAll('.gallery-tile');
   tiles.forEach(tile => {
-    tile.style.height = `${container.clientWidth/5}px`;
+    tile.style.height = `${sizeOfTile()}px`;
   });
 }
 
 addImagesToWrapper(activeTab.id)
-galleryCarousel.style.height = `${container.clientWidth/5}px`;
+galleryCarousel.style.height = `${sizeOfTile()}px`;
 
 tabs.forEach(tab => tab.addEventListener('click', () => {
   if (tab !== activeTab) {
@@ -87,7 +160,9 @@ tabs.forEach(tab => tab.addEventListener('click', () => {
 }));
 
 window.addEventListener('resize', () => {
-  galleryCarousel.style.height = `${container.clientWidth/5}px`;
+  isMobile = window.innerWidth < 768;
+  galleryCarousel.style.height = `${sizeOfTile()}px`;
+  swipeBarrier = sizeOfTile();
   updateTilesHeight();
 });
 
@@ -104,7 +179,7 @@ prevBtn.addEventListener('click', () => {
 })
 
 closeFullscreen.addEventListener('click', () => {
-  fullScreenImg.parentElement.classList.add("photo-placeholder_hidden")
+  photoPlaceholder.classList.add("photo-placeholder_hidden");
 })
 
 // Draggable functionality
