@@ -64,7 +64,7 @@ const openOnFullScreen = (e) => {
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape' || event.key === 'Esc') {
         fullScreenImg.parentElement.classList.add("photo-placeholder_hidden");
-        fullScreenVideo.src = "";
+        fullScreenVideo.src = '';
       }
     });
   } else {
@@ -180,6 +180,7 @@ prevBtn.addEventListener('click', () => {
 
 closeFullscreen.addEventListener('click', () => {
   photoPlaceholder.classList.add("photo-placeholder_hidden");
+  fullScreenVideo.src = '';
 })
 
 // Draggable functionality
