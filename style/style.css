@@ -121,9 +121,9 @@ body {
 .playIcon {
   pointer-events: none;
   position: absolute;
-  max-width: 40%;
+  width: auto;
   max-height: 40%;
-  object-fit: cover;
+  /* object-fit: cover; */
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
