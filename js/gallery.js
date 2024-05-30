@@ -9,6 +9,8 @@ const fullScreenImg = document.querySelector('.fullscreen-photo');
 const fullScreenVideo = document.querySelector('.fullscreen-video');
 const closeFullscreen = document.querySelector('.close-photo');
 const photoPlaceholder = document.querySelector('.photo-placeholder');
+const prevFullscreenBtn = document.querySelector('.prev-fullscreen');
+const nextFullscreenBtn = document.querySelector('.next-fullscreen');
 
 let isDragging = false;
 let startPos = 0;
@@ -19,6 +21,7 @@ let currentIndex = 0;
 let isSwipe = false;
 let isMobile = window.innerWidth < 768;
 let activeElementType;
+let currentTile;
 
 const sizeOfTile = () => {
   const computedStyle = getComputedStyle(container);
@@ -47,16 +50,14 @@ function isImageFileName(fileName) {
   return imageExtensions.includes(extension);
 }
 
-const openOnFullScreen = (e) => {
-  const image = e.target;
-  const tile = image.parentElement;
+const openOnFullScreen = (tile) => {
+  const image = tile.firstChild;
 
   if (tile.classList.contains("videoTile")) {
     fullScreenImg.classList.add("hidden");
     fullScreenVideo.classList.remove("hidden");
 
     const videoUrl = tile.getAttribute("data-youtube-link");
-    console.log(videoUrl);
 
     fullScreenVideo.src = videoUrl;
 
@@ -84,7 +85,7 @@ const openOnFullScreen = (e) => {
 
 }
 
-const createImageTile = (imgPath, isVideo, videoUrl) => {
+const createTile = (imgPath, isVideo, videoUrl) => {
   const li = document.createElement("li");
   li.classList.add('gallery-tile');
   li.style.height = `${sizeOfTile()}px`;
@@ -112,7 +113,8 @@ const createImageTile = (imgPath, isVideo, videoUrl) => {
 
   !isSwipe && li.addEventListener('click', (e) => {
     if (!isSwipe) {
-      openOnFullScreen(e);
+      currentTile = li;
+      openOnFullScreen(e.target.parentElement);
     }
   });
 
@@ -134,7 +136,7 @@ const addImagesToWrapper = async (tabId) => {
         const isVideo = tileObj["isVideo"];
         const videoUrl = tileObj["videoUrl"];
 
-        const newTile = createImageTile(`img/${tabId}/${fileName}`, isVideo, videoUrl);
+        const newTile = createTile(`img/${tabId}/${fileName}`, isVideo, videoUrl);
         galleryWrapper.appendChild(newTile);
       });
     })
@@ -182,6 +184,32 @@ closeFullscreen.addEventListener('click', () => {
   photoPlaceholder.classList.add("photo-placeholder_hidden");
   fullScreenVideo.src = '';
 })
+
+function isFirstChild(element) {
+  return element === element.parentElement.firstElementChild;
+}
+
+function isLastChild(element) {
+  return element === element.parentElement.lastElementChild;
+}
+
+prevFullscreenBtn.addEventListener('click', () => {
+  let prevTile = currentTile.previousElementSibling;
+  if (!prevTile) {
+    prevTile = currentTile.parentElement.lastElementChild;
+  }
+  currentTile = prevTile;
+  openOnFullScreen(prevTile);
+});
+
+nextFullscreenBtn.addEventListener('click', () => {
+  let nextTile = currentTile.nextElementSibling;
+  if (!nextTile) {
+    nextTile = currentTile.parentElement.firstElementChild;
+  }
+  currentTile = nextTile;
+  openOnFullScreen(nextTile);
+});
 
 // Draggable functionality
 const touchStart = (index) => {
