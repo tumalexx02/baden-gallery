@@ -137,6 +137,13 @@ body {
 .fullscreen-photo {
   user-select: none;
   -webkit-user-drag: none;
+  cursor: grab;
+  cursor: -webkit-grab;
+}
+
+.fullscreen-photo:active {
+  cursor: grabbing;
+  cursor: -webkit-grabbing;
 }
 
 .prev-fullscreen, .next-fullscreen {

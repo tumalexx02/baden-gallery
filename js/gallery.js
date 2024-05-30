@@ -294,12 +294,12 @@ const touchFullscreenEnd = () => {
 
   if (Math.abs(movedBy) > 10) {
     if (movedBy < -50) {
-      // fullScreenImg.style.transition = 'transform 0.3s ease-out'; // Добавить плавную анимацию возврата
+      fullScreenImg.style.transition = 'transform 0.3s ease-out';
       fullScreenImg.style.transform = 'translateX(-100%)';
       nextFullscreenBtn.click();
     }
     if (movedBy > 50) {
-      // fullScreenImg.style.transition = 'transform 0.3s ease-out'; // Добавить плавную анимацию возврата
+      fullScreenImg.style.transition = 'transform 0.3s ease-out';
       fullScreenImg.style.transform = 'translateX(100%)';
       prevFullscreenBtn.click();
     }
@@ -319,11 +319,10 @@ const touchFullscreenMove = (event) => {
 const resetFullscreenTranslate = () => {
   currentFullscreenTranslate = 0;
   prevFullscreenTranslate = 0;
-  // fullScreenImg.style.transition = 'transform 0.3s ease-out';
+  fullScreenImg.style.transition = 'transform 0.3s ease-out';
   fullScreenImg.style.transform = 'translateX(0)';
 };
 
-// Добавление обработчиков событий на fullScreenImg
 fullScreenImg.addEventListener('touchstart', touchFullscreenStart);
 fullScreenImg.addEventListener('touchend', touchFullscreenEnd);
 fullScreenImg.addEventListener('touchmove', touchFullscreenMove);
