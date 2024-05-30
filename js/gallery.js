@@ -200,6 +200,7 @@ prevFullscreenBtn.addEventListener('click', () => {
   }
   currentTile = prevTile;
   openOnFullScreen(prevTile);
+  // fullScreenVideo.src = '';
 });
 
 nextFullscreenBtn.addEventListener('click', () => {
@@ -209,6 +210,7 @@ nextFullscreenBtn.addEventListener('click', () => {
   }
   currentTile = nextTile;
   openOnFullScreen(nextTile);
+  // fullScreenVideo.src = '';
 });
 
 // Draggable functionality
@@ -273,3 +275,60 @@ galleryWrapper.addEventListener('mousemove', touchMove);
 galleryWrapper.addEventListener('touchstart', touchStart(0));
 galleryWrapper.addEventListener('touchend', touchEnd);
 galleryWrapper.addEventListener('touchmove', touchMove);
+
+// Draggable fullscreen functionality
+let startFullscreenPos = 0;
+let currentFullscreenTranslate = 0;
+let prevFullscreenTranslate = 0;
+let isFullscreenDragging = false;
+
+const touchFullscreenStart = (event) => {
+  isFullscreenDragging = true;
+  startFullscreenPos = getPositionX(event);
+  fullScreenImg.style.transition = 'none'; // Убрать анимацию для плавного перетаскивания
+};
+
+const touchFullscreenEnd = () => {
+  isFullscreenDragging = false;
+  const movedBy = currentFullscreenTranslate - prevFullscreenTranslate;
+
+  if (Math.abs(movedBy) > 10) {
+    if (movedBy < -50) {
+      // fullScreenImg.style.transition = 'transform 0.3s ease-out'; // Добавить плавную анимацию возврата
+      fullScreenImg.style.transform = 'translateX(-100%)';
+      nextFullscreenBtn.click();
+    }
+    if (movedBy > 50) {
+      // fullScreenImg.style.transition = 'transform 0.3s ease-out'; // Добавить плавную анимацию возврата
+      fullScreenImg.style.transform = 'translateX(100%)';
+      prevFullscreenBtn.click();
+    }
+  }
+
+  resetFullscreenTranslate();
+};
+
+const touchFullscreenMove = (event) => {
+  if (isFullscreenDragging) {
+    const currentPosition = getPositionX(event);
+    currentFullscreenTranslate = prevFullscreenTranslate + currentPosition - startFullscreenPos;
+    fullScreenImg.style.transform = `translateX(${currentFullscreenTranslate}px)`;
+  }
+};
+
+const resetFullscreenTranslate = () => {
+  currentFullscreenTranslate = 0;
+  prevFullscreenTranslate = 0;
+  // fullScreenImg.style.transition = 'transform 0.3s ease-out';
+  fullScreenImg.style.transform = 'translateX(0)';
+};
+
+// Добавление обработчиков событий на fullScreenImg
+fullScreenImg.addEventListener('touchstart', touchFullscreenStart);
+fullScreenImg.addEventListener('touchend', touchFullscreenEnd);
+fullScreenImg.addEventListener('touchmove', touchFullscreenMove);
+
+fullScreenImg.addEventListener('mousedown', touchFullscreenStart);
+fullScreenImg.addEventListener('mouseup', touchFullscreenEnd);
+fullScreenImg.addEventListener('mouseleave', touchFullscreenEnd);
+fullScreenImg.addEventListener('mousemove', touchFullscreenMove);
