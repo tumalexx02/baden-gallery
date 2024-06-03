@@ -1,16 +1,16 @@
-const tabs = document.querySelectorAll('.tabs ul li');
-let activeTab = document.querySelector('.tabs ul li.is-active');
-const galleryCarousel = document.querySelector('.gallery-carousel');
-const container = document.querySelector('.container');
-const galleryWrapper = document.querySelector('.gallery-wrapper');
-const prevBtn = document.querySelector('.gallery-prev');
-const nextBtn = document.querySelector('.gallery-next');
-const fullScreenImg = document.querySelector('.fullscreen-photo');
-const fullScreenVideo = document.querySelector('.fullscreen-video');
-const closeFullscreen = document.querySelector('.close-photo');
-const photoPlaceholder = document.querySelector('.photo-placeholder');
-const prevFullscreenBtn = document.querySelector('.prev-fullscreen');
-const nextFullscreenBtn = document.querySelector('.next-fullscreen');
+const tabs = document.querySelectorAll('.gallery-container .tabs ul li');
+let activeTab = document.querySelector('.gallery-container .tabs ul li.is-active');
+const galleryCarousel = document.querySelector('.baden-gallery-carousel');
+const container = document.querySelector('.gallery-container');
+const galleryWrapper = document.querySelector('.baden-gallery-wrapper');
+const prevBtn = document.querySelector('.baden-gallery-prev');
+const nextBtn = document.querySelector('.baden-gallery-next');
+const fullScreenImg = document.querySelector('.gallery-fullscreen-photo');
+const fullScreenVideo = document.querySelector('.gallery-fullscreen-video');
+const closeFullscreen = document.querySelector('.gallery-close-photo');
+const photoPlaceholder = document.querySelector('.baden-photo-placeholder');
+const prevFullscreenBtn = document.querySelector('.baden-prev-fullscreen');
+const nextFullscreenBtn = document.querySelector('.baden-next-fullscreen');
 
 let isDragging = false;
 let startPos = 0;
@@ -61,10 +61,10 @@ const openOnFullScreen = (tile) => {
 
     fullScreenVideo.src = videoUrl;
 
-    fullScreenImg.parentElement.classList.remove("photo-placeholder_hidden");
+    fullScreenImg.parentElement.classList.remove("baden-photo-placeholder_hidden");
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape' || event.key === 'Esc') {
-        fullScreenImg.parentElement.classList.add("photo-placeholder_hidden");
+        fullScreenImg.parentElement.classList.add("baden-photo-placeholder_hidden");
         fullScreenVideo.src = '';
       }
     });
@@ -74,10 +74,10 @@ const openOnFullScreen = (tile) => {
 
     const photoSrc = image.src;
     fullScreenImg.setAttribute("src", photoSrc);
-    fullScreenImg.parentElement.classList.remove("photo-placeholder_hidden");
+    fullScreenImg.parentElement.classList.remove("baden-photo-placeholder_hidden");
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape' || event.key === 'Esc') {
-        fullScreenImg.parentElement.classList.add("photo-placeholder_hidden");
+        fullScreenImg.parentElement.classList.add("baden-photo-placeholder_hidden");
         fullScreenImg.src = "";
       }
     });
@@ -181,7 +181,7 @@ prevBtn.addEventListener('click', () => {
 })
 
 closeFullscreen.addEventListener('click', () => {
-  photoPlaceholder.classList.add("photo-placeholder_hidden");
+  photoPlaceholder.classList.add("baden-photo-placeholder_hidden");
   fullScreenVideo.src = '';
 })
 

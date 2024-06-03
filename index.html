@@ -10,7 +10,7 @@
 </head>
 <body>
   <section id="gallery" class="gallery">
-    <div class="container">
+    <div class="container gallery-container">
       <h3 class="speed-dial__title colored-text">Фото и видео галерея</h3>
 
       <div class="tabs">
@@ -32,22 +32,21 @@
       </div>
 
 
-      <ul class="gallery-carousel">
-        <button class="gallery-prev">←</button>
-        <div class="gallery-wrapper">
+      <ul class="baden-gallery-carousel">
+        <button class="baden-gallery-prev">←</button>
+        <div class="baden-gallery-wrapper">
         </div>
-        <button class="gallery-next">→</button>
+        <button class="baden-gallery-next">→</button>
       </ul>
     </div>
   </section>
 
-  <div class="photo-placeholder photo-placeholder_hidden">
-    <div class="dimmed-background"></div>
-    <img src="" alt="fullscreen-photo" class="fullscreen-photo">
-    <iframe src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="fullscreen-video hidden"></iframe>
-    <button class="close-photo">×</button>
-    <button class="prev-fullscreen">←</button>
-    <button class="next-fullscreen">→</button>
+  <div class="baden-photo-placeholder baden-photo-placeholder_hidden">
+    <img src="" alt="gallery-fullscreen-photo" class="gallery-fullscreen-photo">
+    <iframe src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="gallery-fullscreen-video hidden"></iframe>
+    <button class="gallery-close-photo">×</button>
+    <button class="baden-prev-fullscreen">←</button>
+    <button class="baden-next-fullscreen">→</button>
   </div>
 
   <script src="js/gallery.js"></script>

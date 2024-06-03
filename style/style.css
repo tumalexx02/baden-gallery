@@ -10,7 +10,7 @@ body {
   position: relative;
 }
 
-.photo-placeholder {
+.baden-photo-placeholder {
   position: absolute;
   display: flex;
   justify-content: center;
@@ -23,23 +23,23 @@ body {
   z-index: 10000000;
 }
 
-.photo-placeholder_hidden {
+.baden-photo-placeholder_hidden {
   display: none;
 }
 
-.photo-placeholder > img {
+.baden-photo-placeholder > img {
   max-width: 80%;
   max-height: 80%;
 }
 
-.photo-placeholder > iframe {
+.baden-photo-placeholder > iframe {
   max-width: 80%;
   max-height: 80%;
   width: 100%;
   height: 100%;
 }
 
-.close-photo {
+.gallery-close-photo {
   position: fixed;
   right: 5%;
   top: 5%;
@@ -49,13 +49,13 @@ body {
   cursor: pointer;
 }
 
-.gallery-carousel {
+.baden-gallery-carousel {
   position: relative;
   overflow: hidden;
   /* height: 300px; */
 }
 
-.gallery-prev, .gallery-next {
+.baden-gallery-prev, .baden-gallery-next {
   margin: 0;
   height: 100%;
   position: absolute;
@@ -70,15 +70,15 @@ body {
   z-index: 10;
 }
 
-.gallery-prev {
+.baden-gallery-prev {
   left: 0;
 }
 
-.gallery-next {
+.baden-gallery-next {
   right: 0;
 }
 
-.gallery-wrapper {
+.baden-gallery-wrapper {
   list-style: none;
   display: flex;
   justify-content: start;
@@ -126,27 +126,27 @@ body {
   cursor: -webkit-grabbing;
 }
 
-.fullscreen-photo.hidden {
+.gallery-fullscreen-photo.hidden {
   display: none;
 }
 
-.fullscreen-video.hidden {
+.gallery-fullscreen-video.hidden {
   display: none;
 }
 
-.fullscreen-photo {
+.gallery-fullscreen-photo {
   user-select: none;
   -webkit-user-drag: none;
   cursor: grab;
   cursor: -webkit-grab;
 }
 
-.fullscreen-photo:active {
+.gallery-fullscreen-photo:active {
   cursor: grabbing;
   cursor: -webkit-grabbing;
 }
 
-.prev-fullscreen, .next-fullscreen {
+.baden-prev-fullscreen, .baden-next-fullscreen {
   position: fixed;
   color: #fff;
   padding: 0.75em 1em;
@@ -156,29 +156,29 @@ body {
   transition: background-color 0.1s;
 }
 
-.prev-fullscreen {
+.baden-prev-fullscreen {
   left: 1vw;
 }
 
-.next-fullscreen {
+.baden-next-fullscreen {
   right: 1vw;
 }
 
 @media (max-width: 1023px) {
-  .gallery-prev, .gallery-next {
+  .baden-gallery-prev, .baden-gallery-next {
     font-size: 1.5rem;
     padding: 0 0.5em;
   }
 }
 
 @media (hover: hover) {
-  .gallery-prev:hover, .gallery-next:hover {
+  .baden-gallery-prev:hover, .baden-gallery-next:hover {
     background-color: rgba(0,0,0,0.2);
   }
   .gallery-tile:hover > img {
     opacity: 0.8;
   }  
-  .prev-fullscreen:hover, .next-fullscreen:hover {
+  .baden-prev-fullscreen:hover, .baden-next-fullscreen:hover {
     background-color: rgba(0,0,0,0.7);
   }
 }
