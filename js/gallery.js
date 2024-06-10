@@ -50,6 +50,28 @@ function isImageFileName(fileName) {
   return imageExtensions.includes(extension);
 }
 
+const preloadAdjacentTiles = () => {
+  const nextTile = currentTile.nextElementSibling ? currentTile.nextElementSibling : currentTile.parentElement.firstElementChild;
+  const prevTile = currentTile.previousElementSibling ? currentTile.previousElementSibling : currentTile.parentElement.lastElementChild;
+
+  const preloadTile = (tile) => {
+    if (tile.classList.contains("videoTile")) {
+      const videoUrl = tile.getAttribute("data-youtube-link");
+      const videoElement = document.createElement('video');
+      videoElement.src = videoUrl;
+      videoElement.preload = 'auto';
+    } else {
+      const imgSrc = tile.firstChild.src;
+      const imgElement = new Image();
+      imgElement.src = imgSrc;
+    }
+  };
+
+  preloadTile(nextTile);
+  preloadTile(prevTile);
+};
+
+// Call preload function whenever a new tile is opened in fullscreen
 const openOnFullScreen = (tile) => {
   const image = tile.firstChild;
 
@@ -83,7 +105,8 @@ const openOnFullScreen = (tile) => {
     });
   }
 
-}
+  preloadAdjacentTiles();  // Preload adjacent tiles
+};
 
 const createTile = (imgPath, isVideo, videoUrl) => {
   const li = document.createElement("li");
@@ -211,24 +234,82 @@ function isLastChild(element) {
   return element === element.parentElement.lastElementChild;
 }
 
-prevFullscreenBtn.addEventListener('click', () => {
-  let prevTile = currentTile.previousElementSibling;
-  if (!prevTile) {
-    prevTile = currentTile.parentElement.lastElementChild;
+nextFullscreenBtn.addEventListener('click', () => {
+  nextFullscreenBtn.disabled = true;
+  if (fullScreenImg.style.display !== 'none') {
+    fullScreenImg.style.transition = 'transform 0.3s ease';
+    fullScreenImg.style.transform = 'translateX(-200%)';
+  } else {
+    fullScreenVideo.style.transition = 'transform 0.3s ease';
+    fullScreenVideo.style.transform = 'translateX(-200%)';
   }
-  currentTile = prevTile;
-  openOnFullScreen(prevTile);
-  // fullScreenVideo.src = '';
+
+  setTimeout(() => {
+    let nextTile = currentTile.nextElementSibling;
+    if (!nextTile) {
+      nextTile = currentTile.parentElement.firstElementChild;
+    }
+    currentTile = nextTile;
+    openOnFullScreen(nextTile);
+
+    if (fullScreenImg.style.display !== 'none') {
+      fullScreenImg.style.transition = 'none';
+      fullScreenImg.style.transform = 'translateX(200%)';
+    } else {
+      fullScreenVideo.style.transition = 'none';
+      fullScreenVideo.style.transform = 'translateX(200%)';
+    }
+
+    setTimeout(() => {
+      if (fullScreenImg.style.display !== 'none') {
+        fullScreenImg.style.transition = 'transform 0.3s ease';
+        fullScreenImg.style.transform = 'translateX(0%)';
+      } else {
+        fullScreenVideo.style.transition = 'transform 0.3s ease';
+        fullScreenVideo.style.transform = 'translateX(0%)';
+      }
+      nextFullscreenBtn.disabled = false;
+    }, 50);
+  }, 300);
 });
 
-nextFullscreenBtn.addEventListener('click', () => {
-  let nextTile = currentTile.nextElementSibling;
-  if (!nextTile) {
-    nextTile = currentTile.parentElement.firstElementChild;
+prevFullscreenBtn.addEventListener('click', () => {
+  prevFullscreenBtn.disabled = true;
+  if (fullScreenImg.style.display !== 'none') {
+    fullScreenImg.style.transition = 'transform 0.3s ease';
+    fullScreenImg.style.transform = 'translateX(200%)';
+  } else {
+    fullScreenVideo.style.transition = 'transform 0.3s ease';
+    fullScreenVideo.style.transform = 'translateX(200%)';
   }
-  currentTile = nextTile;
-  openOnFullScreen(nextTile);
-  // fullScreenVideo.src = '';
+
+  setTimeout(() => {
+    let prevTile = currentTile.previousElementSibling;
+    if (!prevTile) {
+      prevTile = currentTile.parentElement.lastElementChild;
+    }
+    currentTile = prevTile;
+    openOnFullScreen(prevTile);
+
+    if (fullScreenImg.style.display !== 'none') {
+      fullScreenImg.style.transition = 'none';
+      fullScreenImg.style.transform = 'translateX(-200%)';
+    } else {
+      fullScreenVideo.style.transition = 'none';
+      fullScreenVideo.style.transform = 'translateX(-200%)';
+    }
+
+    setTimeout(() => {
+      if (fullScreenImg.style.display !== 'none') {
+        fullScreenImg.style.transition = 'transform 0.3s ease';
+        fullScreenImg.style.transform = 'translateX(0%)';
+      } else {
+        fullScreenVideo.style.transition = 'transform 0.3s ease';
+        fullScreenVideo.style.transform = 'translateX(0%)';
+      }
+      prevFullscreenBtn.disabled = false;
+    }, 50);
+  }, 300);
 });
 
 // Draggable functionality
@@ -303,7 +384,8 @@ let isFullscreenDragging = false;
 const touchFullscreenStart = (event) => {
   isFullscreenDragging = true;
   startFullscreenPos = getPositionX(event);
-  fullScreenImg.style.transition = 'none'; // Убрать анимацию для плавного перетаскивания
+  fullScreenImg.style.transition = 'none'; // Remove transition for smooth dragging
+  fullScreenVideo.style.transition = 'none';
 };
 
 const touchFullscreenEnd = () => {
@@ -314,11 +396,15 @@ const touchFullscreenEnd = () => {
     if (movedBy < -50) {
       fullScreenImg.style.transition = 'transform 0.3s ease-out';
       fullScreenImg.style.transform = 'translateX(-100%)';
+      fullScreenVideo.style.transition = 'transform 0.3s ease-out';
+      fullScreenVideo.style.transform = 'translateX(-100%)';
       nextFullscreenBtn.click();
     }
     if (movedBy > 50) {
       fullScreenImg.style.transition = 'transform 0.3s ease-out';
       fullScreenImg.style.transform = 'translateX(100%)';
+      fullScreenVideo.style.transition = 'transform 0.3s ease-out';
+      fullScreenVideo.style.transform = 'translateX(100%)';
       prevFullscreenBtn.click();
     }
   }
@@ -331,6 +417,7 @@ const touchFullscreenMove = (event) => {
     const currentPosition = getPositionX(event);
     currentFullscreenTranslate = prevFullscreenTranslate + currentPosition - startFullscreenPos;
     fullScreenImg.style.transform = `translateX(${currentFullscreenTranslate}px)`;
+    fullScreenVideo.style.transform = `translateX(${currentFullscreenTranslate}px)`;
   }
 };
 
@@ -339,6 +426,8 @@ const resetFullscreenTranslate = () => {
   prevFullscreenTranslate = 0;
   fullScreenImg.style.transition = 'transform 0.3s ease-out';
   fullScreenImg.style.transform = 'translateX(0)';
+  fullScreenVideo.style.transition = 'transform 0.3s ease-out';
+  fullScreenVideo.style.transform = 'translateX(0)';
 };
 
 fullScreenImg.addEventListener('touchstart', touchFullscreenStart);
@@ -349,3 +438,12 @@ fullScreenImg.addEventListener('mousedown', touchFullscreenStart);
 fullScreenImg.addEventListener('mouseup', touchFullscreenEnd);
 fullScreenImg.addEventListener('mouseleave', touchFullscreenEnd);
 fullScreenImg.addEventListener('mousemove', touchFullscreenMove);
+
+fullScreenVideo.addEventListener('touchstart', touchFullscreenStart);
+fullScreenVideo.addEventListener('touchend', touchFullscreenEnd);
+fullScreenVideo.addEventListener('touchmove', touchFullscreenMove);
+
+fullScreenVideo.addEventListener('mousedown', touchFullscreenStart);
+fullScreenVideo.addEventListener('mouseup', touchFullscreenEnd);
+fullScreenVideo.addEventListener('mouseleave', touchFullscreenEnd);
+fullScreenVideo.addEventListener('mousemove', touchFullscreenMove);
