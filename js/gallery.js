@@ -169,16 +169,34 @@ window.addEventListener('resize', () => {
 });
 
 nextBtn.addEventListener('click', () => {
-  const firstTile = galleryWrapper.firstChild;
-  galleryWrapper.appendChild(firstTile);
-  resetTranslate();
+  nextBtn.disabled = true;
+  galleryWrapper.style.transition = 'transform 0.3s ease';
+  galleryWrapper.style.transform = `translateX(-${sizeOfTile()}px)`;
+
+  setTimeout(() => {
+    galleryWrapper.style.transition = 'none';
+    galleryWrapper.style.transform = 'none';
+    const firstTile = galleryWrapper.firstChild;
+    galleryWrapper.appendChild(firstTile);
+    resetTranslate();
+    nextBtn.disabled = false;
+  }, 300);
 });
 
 prevBtn.addEventListener('click', () => {
-  const lastTile = galleryWrapper.lastChild;
-  galleryWrapper.prepend(lastTile);
-  resetTranslate();
-})
+  prevBtn.disabled = true;
+  galleryWrapper.style.transition = 'transform 0.3s ease';
+  galleryWrapper.style.transform = `translateX(${sizeOfTile()}px)`;
+
+  setTimeout(() => {
+    galleryWrapper.style.transition = 'none';
+    galleryWrapper.style.transform = 'none';
+    const lastTile = galleryWrapper.lastChild;
+    galleryWrapper.prepend(lastTile);
+    resetTranslate();
+    nextBtn.disabled = false;
+  }, 300);
+});
 
 closeFullscreen.addEventListener('click', () => {
   photoPlaceholder.classList.add("baden-photo-placeholder_hidden");
