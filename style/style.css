@@ -21,6 +21,7 @@ body {
   height: 100vh;
   background-color: rgba(0,0,0,0.9);
   z-index: 10000000;
+  overflow: hidden;
 }
 
 .baden-photo-placeholder_hidden {
@@ -139,6 +140,8 @@ body {
   -webkit-user-drag: none;
   cursor: grab;
   cursor: -webkit-grab;
+  transform: translateX(0px);
+  transition: transform 0.3s ease;
 }
 
 .gallery-fullscreen-photo:active {
@@ -149,9 +152,8 @@ body {
 .baden-prev-fullscreen, .baden-next-fullscreen {
   position: fixed;
   color: #fff;
-  padding: 0.75em 1em;
-  font-size: 2rem;
-  background-color: rgba(0,0,0,0.5);
+  padding: 1.5em;
+  background-color: rgba(0,0,0,0.2);
   cursor: pointer;
   transition: background-color 0.1s;
 }
@@ -179,6 +181,6 @@ body {
     opacity: 0.8;
   }  
   .baden-prev-fullscreen:hover, .baden-next-fullscreen:hover {
-    background-color: rgba(0,0,0,0.7);
+    background-color: rgba(0,0,0,0.4);
   }
 }
