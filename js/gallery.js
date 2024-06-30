@@ -193,9 +193,9 @@ window.addEventListener('resize', () => {
 
 nextBtn.addEventListener('click', () => {
   nextBtn.disabled = true;
-  galleryWrapper.style.transition = 'transform 0.3s ease';
+  galleryWrapper.style.transition = 'transform 0.3s';
   galleryWrapper.style.transform = `translateX(-${sizeOfTile()}px)`;
-
+  
   setTimeout(() => {
     galleryWrapper.style.transition = 'none';
     galleryWrapper.style.transform = 'none';
@@ -208,7 +208,7 @@ nextBtn.addEventListener('click', () => {
 
 prevBtn.addEventListener('click', () => {
   prevBtn.disabled = true;
-  galleryWrapper.style.transition = 'transform 0.3s ease';
+  galleryWrapper.style.transition = 'transform 0.3s';
   galleryWrapper.style.transform = `translateX(${sizeOfTile()}px)`;
 
   setTimeout(() => {
@@ -220,6 +220,51 @@ prevBtn.addEventListener('click', () => {
     nextBtn.disabled = false;
   }, 300);
 });
+
+const animateTranslation = (startTranslate, endTranslate, duration, callback) => {
+  const startTime = performance.now();
+
+  const animate = (currentTime) => {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    currentTranslate = startTranslate + (endTranslate - startTranslate) * progress;
+    setSliderPosition(currentTranslate);
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      callback();
+    }
+  };
+
+  requestAnimationFrame(animate);
+};
+
+const nextDragging = () => {
+  const tileWidth = sizeOfTile();
+  const duration = (1 - Math.abs(currentTranslate / tileWidth)) * 300;
+
+  animateTranslation(currentTranslate, -tileWidth, duration, () => {
+    galleryWrapper.style.transition = 'none';
+    galleryWrapper.style.transform = 'none';
+    const firstTile = galleryWrapper.firstChild;
+    galleryWrapper.appendChild(firstTile);
+    resetTranslate();
+  });
+};
+
+const prevDragging = () => {
+  const tileWidth = sizeOfTile();
+  const duration = (1 - Math.abs(currentTranslate / tileWidth)) * 300;
+
+  animateTranslation(currentTranslate, tileWidth, duration, () => {
+    galleryWrapper.style.transition = 'none';
+    galleryWrapper.style.transform = 'none';
+    const lastTile = galleryWrapper.lastChild;
+    galleryWrapper.prepend(lastTile);
+    resetTranslate();
+  });
+};
 
 closeFullscreen.addEventListener('click', () => {
   photoPlaceholder.classList.add("baden-photo-placeholder_hidden");
@@ -237,10 +282,10 @@ function isLastChild(element) {
 nextFullscreenBtn.addEventListener('click', () => {
   nextFullscreenBtn.disabled = true;
   if (fullScreenImg.style.display !== 'none') {
-    fullScreenImg.style.transition = 'transform 0.3s ease';
+    fullScreenImg.style.transition = 'transform 0.3s';
     fullScreenImg.style.transform = 'translateX(-200%)';
   } else {
-    fullScreenVideo.style.transition = 'transform 0.3s ease';
+    fullScreenVideo.style.transition = 'transform 0.3s';
     fullScreenVideo.style.transform = 'translateX(-200%)';
   }
 
@@ -262,10 +307,10 @@ nextFullscreenBtn.addEventListener('click', () => {
 
     setTimeout(() => {
       if (fullScreenImg.style.display !== 'none') {
-        fullScreenImg.style.transition = 'transform 0.3s ease';
+        fullScreenImg.style.transition = 'transform 0.3s';
         fullScreenImg.style.transform = 'translateX(0%)';
       } else {
-        fullScreenVideo.style.transition = 'transform 0.3s ease';
+        fullScreenVideo.style.transition = 'transform 0.3s';
         fullScreenVideo.style.transform = 'translateX(0%)';
       }
       nextFullscreenBtn.disabled = false;
@@ -276,10 +321,10 @@ nextFullscreenBtn.addEventListener('click', () => {
 prevFullscreenBtn.addEventListener('click', () => {
   prevFullscreenBtn.disabled = true;
   if (fullScreenImg.style.display !== 'none') {
-    fullScreenImg.style.transition = 'transform 0.3s ease';
+    fullScreenImg.style.transition = 'transform 0.3s';
     fullScreenImg.style.transform = 'translateX(200%)';
   } else {
-    fullScreenVideo.style.transition = 'transform 0.3s ease';
+    fullScreenVideo.style.transition = 'transform 0.3s';
     fullScreenVideo.style.transform = 'translateX(200%)';
   }
 
@@ -301,10 +346,10 @@ prevFullscreenBtn.addEventListener('click', () => {
 
     setTimeout(() => {
       if (fullScreenImg.style.display !== 'none') {
-        fullScreenImg.style.transition = 'transform 0.3s ease';
+        fullScreenImg.style.transition = 'transform 0.3s';
         fullScreenImg.style.transform = 'translateX(0%)';
       } else {
-        fullScreenVideo.style.transition = 'transform 0.3s ease';
+        fullScreenVideo.style.transition = 'transform 0.3s';
         fullScreenVideo.style.transform = 'translateX(0%)';
       }
       prevFullscreenBtn.disabled = false;
@@ -331,11 +376,12 @@ const touchEnd = () => {
 
   if (Math.abs(movedBy) > 10) {
     isSwipe = true;
-    if (movedBy < -50) nextBtn.click();
-    if (movedBy > 50) prevBtn.click();
+    if (movedBy < -50) nextDragging();
+    if (movedBy > 50) prevDragging();
   }
-
+  
   resetTranslate();
+
   galleryWrapper.classList.remove('grabbing');
 }
 
@@ -356,8 +402,8 @@ const animation = () => {
   if (isDragging) requestAnimationFrame(animation);
 }
 
-const setSliderPosition = () => {
-  galleryWrapper.style.transform = `translateX(${currentTranslate}px)`;
+const setSliderPosition = (newPosition) => {
+  galleryWrapper.style.transform = `translateX(${newPosition ?? currentTranslate}px)`;
 }
 
 const resetTranslate = () => {
@@ -394,16 +440,16 @@ const touchFullscreenEnd = () => {
 
   if (Math.abs(movedBy) > 10) {
     if (movedBy < -50) {
-      fullScreenImg.style.transition = 'transform 0.3s ease-out';
+      fullScreenImg.style.transition = 'transform 0.3s';
       fullScreenImg.style.transform = 'translateX(-100%)';
-      fullScreenVideo.style.transition = 'transform 0.3s ease-out';
+      fullScreenVideo.style.transition = 'transform 0.3s';
       fullScreenVideo.style.transform = 'translateX(-100%)';
       nextFullscreenBtn.click();
     }
     if (movedBy > 50) {
-      fullScreenImg.style.transition = 'transform 0.3s ease-out';
+      fullScreenImg.style.transition = 'transform 0.3s';
       fullScreenImg.style.transform = 'translateX(100%)';
-      fullScreenVideo.style.transition = 'transform 0.3s ease-out';
+      fullScreenVideo.style.transition = 'transform 0.3s';
       fullScreenVideo.style.transform = 'translateX(100%)';
       prevFullscreenBtn.click();
     }
@@ -424,9 +470,9 @@ const touchFullscreenMove = (event) => {
 const resetFullscreenTranslate = () => {
   currentFullscreenTranslate = 0;
   prevFullscreenTranslate = 0;
-  fullScreenImg.style.transition = 'transform 0.3s ease-out';
+  fullScreenImg.style.transition = 'transform 0.3s';
   fullScreenImg.style.transform = 'translateX(0)';
-  fullScreenVideo.style.transition = 'transform 0.3s ease-out';
+  fullScreenVideo.style.transition = 'transform 0.3s';
   fullScreenVideo.style.transform = 'translateX(0)';
 };
 
